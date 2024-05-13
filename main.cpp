@@ -60,19 +60,19 @@ class Ant
 
     void generate_new_cells(std::stack<Cell>& stack, Cell& cell){
         auto up = Cell(cell.x,cell.y+1);
-        if(is_reachble_cell(up) &&  !is_visited(up)){
+        if(is_reachble_cell(up) && !is_visited(up)){
             stack.emplace(up);
         }
         auto down = Cell(cell.x,cell.y-1);
-        if(is_reachble_cell(down) &&  !is_visited(down)){
+        if(is_reachble_cell(down) && !is_visited(down)){
             stack.emplace(down);
         }
         auto left = Cell(cell.x-1,cell.y);
-        if(is_reachble_cell(left) &&  !is_visited(left)){
+        if(is_reachble_cell(left) && !is_visited(left)){
             stack.emplace(left);
         }
         auto right = Cell(cell.x+1,cell.y);
-        if(is_reachble_cell(right) &&  !is_visited(right)){
+        if(is_reachble_cell(right) && !is_visited(right)){
             stack.emplace(right);
         }
     }
@@ -89,7 +89,7 @@ class Ant
         if(is_reachble_cell(start_position)){
             new_cells.push(start_position);
         }
-        while (!new_cells.empty())
+        while(!new_cells.empty())
         {
             Cell& cell = new_cells.top();
             new_cells.pop();
