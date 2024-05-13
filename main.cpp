@@ -4,6 +4,7 @@
 #include <vector>
 #include <algorithm>
 #include <locale.h>
+#include <chrono>
 
 struct Cell
 {
@@ -59,14 +60,14 @@ class Ant
 
     void generate_new_cells(std::vector<Cell>&new_cells, Cell& cell){
         new_cells.clear();
-        new_cells.push_back(Cell(cell.x,cell.y+1));
-        new_cells.push_back(Cell(cell.x,cell.y-1));
-        new_cells.push_back(Cell(cell.x-1,cell.y));
-        new_cells.push_back(Cell(cell.x+1,cell.y));
+        new_cells.reserve(4);
+        new_cells.emplace_back (cell.x,cell.y+1);
+        new_cells.emplace_back (cell.x,cell.y-1);
+        new_cells.emplace_back (cell.x-1,cell.y);
+        new_cells.emplace_back (cell.x+1,cell.y);
     }
 
     void filter_cells(std::vector<Cell>& from, std::vector<Cell>& to){
-        to.clear();
         std::copy_if(from.begin(), from.end(),
                  std::back_inserter(to),
                  [this](Cell& cell) { return is_reachble_cell(cell) &&  !is_visited(cell); });
@@ -112,7 +113,11 @@ int main(int, char**){
     std::locale rus("rus_rus.866");
     std::wcout.imbue(rus);
     Ant ant(1000,1000);
+    auto begin = std::chrono::steady_clock::now();
     ant.Walk();
+    auto end = std::chrono::steady_clock::now();
+    auto elapsed_ms = std::chrono::duration_cast<std::chrono::milliseconds>(end - begin);
     std::wcout << L"Количество доступных ячеек: " << ant.Available_cells_count() << std::endl;
+    std::wcout << L"Время, млсек: " << elapsed_ms.count() << std::endl;
     return 0;
 }
