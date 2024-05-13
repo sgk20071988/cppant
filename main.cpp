@@ -58,27 +58,25 @@ class Ant
         return visited_cells.count(cell) > 0;    
     }
 
-    void generate_new_cells(std::vector<Cell>&new_cells, Cell& cell){
-        new_cells.clear();
-        new_cells.reserve(4);
-        new_cells.emplace_back (cell.x,cell.y+1);
-        new_cells.emplace_back (cell.x,cell.y-1);
-        new_cells.emplace_back (cell.x-1,cell.y);
-        new_cells.emplace_back (cell.x+1,cell.y);
-    }
-
-    void filter_cells(std::vector<Cell>& from, std::vector<Cell>& to){
-        std::copy_if(from.begin(), from.end(),
-                 std::back_inserter(to),
-                 [this](Cell& cell) { return is_reachble_cell(cell) &&  !is_visited(cell); });
-    }  
-    
-    void to_stack(std::stack<Cell>& stack, std::vector<Cell>& from){
-        for (auto cell : from){
-            stack.push(cell);
+    void generate_new_cells(std::stack<Cell>& stack, Cell& cell){
+        auto up = Cell(cell.x,cell.y+1);
+        if(is_reachble_cell(up) &&  !is_visited(up)){
+            stack.emplace(up);
+        }
+        auto down = Cell(cell.x,cell.y-1);
+        if(is_reachble_cell(down) &&  !is_visited(down)){
+            stack.emplace(down);
+        }
+        auto left = Cell(cell.x-1,cell.y);
+        if(is_reachble_cell(left) &&  !is_visited(left)){
+            stack.emplace(left);
+        }
+        auto right = Cell(cell.x+1,cell.y);
+        if(is_reachble_cell(right) &&  !is_visited(right)){
+            stack.emplace(right);
         }
     }
-
+    
     public:
 
     Ant(size_t x, size_t y){
@@ -93,14 +91,10 @@ class Ant
         }
         while (!new_cells.empty())
         {
-            Cell cell = new_cells.top();
+            Cell& cell = new_cells.top();
             new_cells.pop();
             visited_cells.insert(cell);
-            std::vector<Cell> gen_cells;
-            std::vector<Cell> filtred_cells;
-            generate_new_cells(gen_cells,cell);
-            filter_cells(gen_cells,filtred_cells);
-            to_stack(new_cells,filtred_cells);
+            generate_new_cells(new_cells,cell);
         }
     }
 
