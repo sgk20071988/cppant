@@ -5,12 +5,35 @@ struct Cell
 {
     size_t x;
     size_t y;
+
+    Cell() { }
+    Cell(size_t x, size_t y)
+    {
+        this->x = x;
+        this->y = y;
+    }
+
+    bool operator==(const Cell& otherCell) const
+    {
+        if (this->x == otherCell.x && this->y == otherCell.y) return true;
+        else return false;
+    }
+
+    struct HashFunction
+    {
+        size_t operator()(const Cell& cell) const
+        {
+            size_t xHash = std::hash<int>()(cell.x);
+            size_t yHash = std::hash<int>()(cell.y) << 1;
+            return xHash ^ yHash;
+        }
+    };
 };
 
 class Ant
 {
     Cell start_position;
-    std::unordered_set<Cell> visited_cells;
+    std::unordered_set<Cell, Cell::HashFunction> visited_cells;
 
     int sum_digits(size_t number){
         int sum = 0;
@@ -19,7 +42,6 @@ class Ant
             number = number / 10;
         }
         return sum;
-
     }
 
     int sum_cell_coordinates(Cell& cell){
@@ -33,7 +55,7 @@ class Ant
     public:
 
     Ant(size_t x, size_t y){
-        start_position = {x,y};
+        start_position = Cell(x,y);
     }
 
     void Walk(){
