@@ -3,6 +3,7 @@
 #include <stack>
 #include <vector>
 #include <algorithm>
+#include <locale.h>
 
 struct Cell
 {
@@ -108,8 +109,10 @@ class Ant
 };
 
 int main(int, char**){
+    std::locale rus("rus_rus.866");
+    std::wcout.imbue(rus);
     Ant ant(1000,1000);
     ant.Walk();
-    std::cout << "Количество доступных ячеек: " << ant.Available_cells_count() << std::endl;
+    std::wcout << L"Количество доступных ячеек: " << ant.Available_cells_count() << std::endl;
     return 0;
 }
